@@ -1,0 +1,163 @@
+{
+  "name": "AefjoQuotesBot - 10",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "http://api.quotable.io/quotes/random?tags=love",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -912,
+        16
+      ],
+      "id": "5c716b72-2a40-4099-bb99-36125910b0ab",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.content }}",
+        "options": {
+          "systemMessage": "Anda adalah asisten penerjemah. Setiap kali menerima sebuah kutipan (quote) berbahasa Inggris, terjemahkanlah ke dalam bahasa Indonesia dengan bahasa yang natural, jelas, dan tetap menjaga makna motivasinya. Jangan menambahkan konten baru, jangan mengubah konteks, dan jangan memberikan penjelasan tambahan. Hanya kirimkan hasil terjemahan dalam satu kalimat atau paragraf sesuai format kutipan aslinya."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -704,
+        16
+      ],
+      "id": "1db33e69-259c-46b6-a61c-5095fafdd0dd",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        176
+      ],
+      "id": "a0e25571-9eda-4939-bcb9-b92cb535fff2",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "p9AbgftQCzESpi9r",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "=7801446448",
+        "text": "=🌿 *Quote of the Day*\n\n“{{ $json.output }}”\n\n👤 *Author:* {{ $('HTTP Request').item.json.author }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        16
+      ],
+      "id": "c3b5abde-972c-45f8-938b-19fb5482e0e7",
+      "name": "Send a text message",
+      "webhookId": "2854128a-d055-45a2-9e45-836c6aab74d1",
+      "credentials": {
+        "telegramApi": {
+          "id": "AWqvlNA7Nd3vuFLQ",
+          "name": "AefjoQuotesBot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1216,
+        64
+      ],
+      "id": "6ab056bb-80d3-43a3-9e28-7a0fc996e773",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3c4bfb88-30da-4f22-89dd-728284c5eb8a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "84eeee32da65a7d85df8d93603f4d8641212ada127f04ddf2a19b9b88626f429"
+  },
+  "id": "Sd4pbDwpyKeowsLx",
+  "tags": []
+}
