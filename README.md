@@ -113,7 +113,7 @@ Pull request terbuka untuk fitur tambahan seperti:
 
 ## 👤 Author
 **Arfan Fadillah**  
-Mobile Developer & Automation Enthusiast  
+Programmer & Automation Enthusiast  
 - Instagram: [@aefjocode](https://www.instagram.com/aefjocode)  
 - YouTube: [@AefjoCode](https://www.youtube.com/@AefjoCode)
 
